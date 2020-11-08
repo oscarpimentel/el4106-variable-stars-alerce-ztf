@@ -48,6 +48,12 @@ def delete_invalid_detections(df, index_name,
 def filter_by_valid_objs(df, valid_objs):
 	return df[df.index.isin(valid_objs)]
 
+def drop_duplicates(df,
+	npartitions=C_.N_DASK,
+	):
+	ddf = dd.from_pandas(df, npartitions=npartitions)
+	return ddf.drop_duplicates().compute() # FAST
+
 ###################################################################################################################################################
 
 def process_df_detections(df, index_name, new_index_name, detections_cols,
@@ -58,6 +64,7 @@ def process_df_detections(df, index_name, new_index_name, detections_cols,
 	df.index.rename(new_index_name, inplace=True) # rename index
 	df = df.reset_index()
 	df = df_to_float32(df)
+	df = drop_duplicates(df)
 	df = delete_invalid_detections(df, new_index_name, uses_corr, npartitions)
 	df = subset_df_columns(df, detections_cols+[new_index_name]) # sub sample columns
 	df = df.set_index([new_index_name])
@@ -66,6 +73,7 @@ def process_df_detections(df, index_name, new_index_name, detections_cols,
 
 def process_df_labels(df, new_index_name, det_objs):
 	df = df_to_float32(df)
+	df = drop_duplicates(df)
 	df = df.set_index([new_index_name])
 	df = filter_by_valid_objs(df, det_objs) # clean labels dataframe
 	objs = list(set(df.index))
