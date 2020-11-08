@@ -9,9 +9,9 @@ from dask import dataframe as dd
 ###################################################################################################################################################
 
 def get_valid_classes_objs(df, df_index_names, target_classes):
-    new_df = df.reset_index()
-    valid_objs = new_df.loc[new_df[df_index_names['label']].isin(target_classes)][df_index_names['oid']]
-    return list(valid_objs.values)
+	new_df = df.reset_index()
+	valid_objs = new_df.loc[new_df[df_index_names['label']].isin(target_classes)][df_index_names['oid']]
+	return list(valid_objs.values)
 
 def subset_df_columns(df, subset_cols):
 	df_cols = list(df.columns)
