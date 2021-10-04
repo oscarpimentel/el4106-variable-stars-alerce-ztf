@@ -6,3 +6,4 @@ pyarrow
 tqdm
 dask
 dask[dataframe]
+fuzzytools
